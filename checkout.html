@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Camping Store</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<header>
+        <h1 class="checkout-logo">🏕️ Camping Store</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="products.html">Shop</a>
+            <a href="cart.html">Cart</a>
+            <a href="checkout.html">Checkout</a>
+            <a href="contact.html">Contact Us</a>
+            <a href="about.html">About Us</a>
+            <a href="login.html">Login</a>
+        </nav>
+    </header>
+
+<main class="container">
+  <h3 class="section-title">Checkout</h3>
+
+  <div class="checkout-container">
+    <form class="checkout-form" id="checkout-form">
+      <label for="fullname">Full name</label><input id="fullname" required>
+      <label for="email">Email</label><input id="email" type="email" required>
+      <label for="address">Address</label><input id="address" required>
+      <label for="city">City</label><input id="city" required>
+      <label for="zip">ZIP</label><input id="zip" required>
+      <label for="payment">Payment method</label>
+      <select id="payment" required><option value="">Select...</option><option value="cash">Cash on Delivery</option><option value="card">Credit/Debit</option></select>
+      <button type="submit" style="margin-top:14px" class="btn">Place Order</button>
+    </form>
+
+    <aside class="order-summary" id="order-summary">
+      <h4>Your Order</h4>
+      <ul id="order-list"></ul>
+      <div style="margin-top:12px"><button class="btn" id="buy-btn">Buy Now (Cash)</button></div>
+    </aside>
+  </div>
+</main>
+
+<footer>© 2025 Camping Store</footer>
+
+<script>
+function loadCart(){return JSON.parse(localStorage.getItem('cart')||'[]')}
+function saveCart(c){localStorage.setItem('cart',JSON.stringify(c))}
+
+function renderOrder(){
+  const ul = document.getElementById('order-list'); const cart = loadCart();
+  ul.innerHTML='';
+  if(cart.length===0){ ul.innerHTML='<li>Your cart is empty.</li>'; return; }
+  let total=0;
+  cart.forEach(it=>{
+    const sub = it.price*it.qty; total+=sub;
+    const li = document.createElement('li'); li.style.display='flex'; li.style.justifyContent='space-between';
+    li.innerHTML = `<span>${it.name} × ${it.qty}</span><strong>$${sub.toFixed(2)}</strong>`;
+    ul.appendChild(li);
+  });
+  const tli = document.createElement('li'); tli.style.marginTop='10px'; tli.innerHTML=`<strong>Total: $${total.toFixed(2)}</strong>`;
+  ul.appendChild(tli);
+}
+renderOrder();
+
+/* Place order */
+document.getElementById('checkout-form').addEventListener('submit', e=>{
+  e.preventDefault();
+  // basic validation done by required attributes
+  // emulate order processing...
+  alert('Order placed! Thank you.');
+  localStorage.removeItem('cart'); // clear cart
+  renderOrder();
+  setTimeout(()=>location.href='home.html',600);
+});
+
+/* Buy Now shortcut button */
+document.getElementById('buy-btn').addEventListener('click', ()=>{
+  document.getElementById('checkout-form').requestSubmit();
+});
+</script>
+</body></html>

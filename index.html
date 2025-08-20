@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Camping Store - Home</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+        <h1 class="checkout-logo">🏕️ Camping Store</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="products.html">Shop</a>
+            <a href="cart.html">Cart</a>
+            <a href="checkout.html">Checkout</a>
+            <a href="contact.html" >Contact Us</a>
+            <a href="about.html">About Us</a>
+            <a href="login.html">Login</a>
+        </nav>
+    </header>
+
+
+  <section class="hero">
+    <h2>Adventure Awaits</h2>
+    <p>Top camping gear for outdoor lovers</p>
+    <a href="products.html" class="btn">Shop Now</a>
+  </section>
+
+<section class="categories">
+    <h2>Special Categories</h2>
+    <div class="carousel-wrapper">
+      <button class="carousel-btn left" onclick="scrollLeft()">&#10094;</button>
+      <div class="category-carousel" id="carousel">
+        <div class="category-card"><img src="img/tent.jpg" alt="Tents"><h3>Tents</h3></div>
+        <div class="category-card"><img src="img/backpack.jpg" alt="Backpacks"><h3>Backpacks</h3></div>
+        <div class="category-card"><img src="img/stove.jpg" alt="Cooking"><h3>Stoves</h3></div>
+        <div class="category-card"><img src="img/boots.jpg" alt="Boots"><h3>Hiking Boots</h3></div>
+        <div class="category-card"><img src="img/Lanterns.jpg" alt="Lanterns"><h3>Lanterns</h3></div>
+        <div class="category-card"><img src="img/Chairs.jpg" alt="Camping Chairs"><h3>Camping Chairs</h3></div>
+        <div class="category-card"><img src="img/matches.jpg" alt="Matches"><h3>Matches</h3></div>
+      </div>
+      <button class="carousel-btn right" onclick="scrollRight()">&#10095; </button>
+    </div>
+  </section>
+   <section class="categories">
+    <h3 class="section-title">All Camping Gear</h3>
+    <div class="product-grid" id="product-grid"></div>
+  </section>
+
+  <footer>© 2025 Camping Store</footer>
+
+
+
+  <footer>
+    <p>&copy; 2025 Camping Store. All rights reserved.</p>
+  </footer>
+
+<script>
+  const carousel = document.getElementById('carousel');
+  const scrollAmount = 270;
+
+  function scrollLeft() {
+    carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+  }
+
+  function scrollRight() {
+    carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+  }
+/* same products data */
+const products = {
+  "tent-2p":{name:"2-Person Waterproof Tent",price:99.99,img:"img/2.tent.jpg"},
+  "backpack":{name:"Camping Backpack",price:79.99,img:"img/hikbag.jpg"},
+  "stove":{name:"Portable Gas Stove",price:49.99,img:"img/stove.jpg"},
+  "boots":{name:"Hiking Boots",price:89.99,img:"img/boots.jpg"},
+  "lantern":{name:"LED Camping Lantern",price:29.99,img:"img/lamps.jpg"},
+  "sleeping-bag":{name:"Thermal Sleeping Bag",price:59.99,img:"img/slpbag.jpg"},
+};
+
+const grid = document.getElementById('product-grid');
+Object.entries(products).forEach(([id,p])=>{
+  const card=document.createElement('div'); card.className='product-card'; card.dataset.id=id;
+  card.innerHTML = `<img src="${p.img}" alt="${p.name}"><h3>${p.name}</h3><p>$${p.price.toFixed(2)}</p>
+    <a class="btn small" href="product.html?id=${id}">View</a>
+    <button class="btn small" onclick="addToCart('${id}',1)">Add</button>`;
+  grid.appendChild(card);
+});
+
+function loadCart(){return JSON.parse(localStorage.getItem('cart')||'[]')}
+function saveCart(c){localStorage.setItem('cart',JSON.stringify(c))}
+function addToCart(id,qty){
+  const p = products[id]; if(!p) return alert('Product not found');
+  let cart = loadCart(); const existing = cart.find(it=>it.id===id);
+  if(existing) existing.qty += qty; else cart.push({id:id,name:p.name,price:p.price,qty:qty,img:p.img});
+  saveCart(cart); alert(`${p.name} added to cart`);
+}
+</script>
+</body>
+
+</html>

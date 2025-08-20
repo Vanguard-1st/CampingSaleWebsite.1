@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+        <h1 class="checkout-logo">🏕️ Camping Store</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="products.html">Shop</a>
+            <a href="cart.html">Cart</a>
+            <a href="checkout.html">Checkout</a>
+            <a href="contact.html">Contact Us</a>
+            <a href="about.html">About Us</a>
+            <a href="login.html">Login</a>
+        </nav>
+    </header>
+
+<main class="container">
+  <h3 class="section-title">Your Shopping Cart</h3>
+  <div class="cart" id="cart-box"></div>
+</main>
+
+<footer>© 2025 Camping Store</footer>
+
+<script>
+function loadCart(){return JSON.parse(localStorage.getItem('cart')||'[]')}
+function saveCart(c){localStorage.setItem('cart',JSON.stringify(c))}
+
+function renderCart(){
+  const box = document.getElementById('cart-box'); const cart = loadCart();
+  if(cart.length===0){ box.innerHTML='<p>Your cart is empty.</p>'; return; }
+  let html = `<table><thead><tr><th>Product</th><th>Price</th><th>Qty</th><th>Subtotal</th><th>Action</th></tr></thead><tbody>`;
+  let total=0;
+  cart.forEach((it,idx)=>{
+    const subtotal = it.price * it.qty; total += subtotal;
+    html += `<tr data-idx="${idx}">
+      <td><img class="thumb" src="${it.img}" alt=""><div style="display:inline-block;vertical-align:top;margin-left:8px">${it.name}</div></td>
+      <td>$${it.price.toFixed(2)}</td>
+      <td><input type="number" min="1" value="${it.qty}" class="qty-input" data-idx="${idx}" style="width:72px;padding:6px;border-radius:6px"></td>
+      <td class="sub">$${subtotal.toFixed(2)}</td>
+      <td><button class="remove-btn" data-idx="${idx}">Remove</button></td>
+    </tr>`;
+  });
+  html += `</tbody></table><div class="cart-total">Total: <strong id="cart-total">$${total.toFixed(2)}</strong></div>
+    <div style="text-align:right;margin-top:12px"><button class="btn" id="to-checkout">Buy Now</button></div>`;
+  box.innerHTML = html;
+
+  document.querySelectorAll('.qty-input').forEach(inp=>{
+    inp.addEventListener('input', e=>{
+      const i = parseInt(e.target.dataset.idx); let v = parseInt(e.target.value||1); if(v<1)v=1; e.target.value=v;
+      cart[i].qty = v; saveCart(cart); renderCart();
+    });
+  });
+  document.querySelectorAll('.remove-btn').forEach(b=>{
+    b.addEventListener('click', e=>{
+      const i = parseInt(e.target.dataset.idx);
+      cart.splice(i,1); saveCart(cart); renderCart();
+    });
+  });
+  document.getElementById('to-checkout').addEventListener('click', ()=>location.href='checkout.html');
+}
+
+renderCart();
+</script>
+</body></html>

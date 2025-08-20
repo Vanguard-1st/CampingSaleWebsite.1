@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Camping Store</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+        <h1 class="checkout-logo">🏕️ Camping Store</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="products.html">Shop</a>
+            <a href="cart.html">Cart</a>
+            <a href="checkout.html">Checkout</a>
+            <a href="contact.html">Contact Us</a>
+            <a href="about.html">About Us</a>
+            <a href="login.html">Login</a>
+        </nav>
+    </header>
+
+  <main class="container">
+    <h3 class="section-title">All Camping Gear</h3>
+    <div class="product-grid" id="product-grid"></div>
+  </main>
+
+  <footer>© 2025 Camping Store</footer>
+
+<script>
+/* same products data */
+const products = {
+  "tent-2p":{name:"2-Person Waterproof Tent",price:99.99,img:"img/2.tent.jpg"},
+  "backpack":{name:"Camping Backpack",price:79.99,img:"img/hikbag.jpg"},
+  "stove":{name:"Portable Gas Stove",price:49.99,img:"img/stove.jpg"},
+  "boots":{name:"Hiking Boots",price:89.99,img:"img/boots.jpg"},
+  "lantern":{name:"LED Camping Lantern",price:29.99,img:"img/lamps.jpg"},
+  "sleeping-bag":{name:"Thermal Sleeping Bag",price:59.99,img:"img/slpbag.jpg"},
+  "camp-chair":{name:"Folding Camp Chair",price:34.99,img:"img/campchir.jpg"},
+  "headlamp":{name:"Rechargeable Headlamp",price:24.99,img:"img/headlamp.jpg"}
+};
+
+const grid = document.getElementById('product-grid');
+Object.entries(products).forEach(([id,p])=>{
+  const card=document.createElement('div'); card.className='product-card'; card.dataset.id=id;
+  card.innerHTML = `<img src="${p.img}" alt="${p.name}"><h3>${p.name}</h3><p>$${p.price.toFixed(2)}</p>
+    <a class="btn small" href="product.html?id=${id}">View</a>
+    <button class="btn small" onclick="addToCart('${id}',1)">Add</button>`;
+  grid.appendChild(card);
+});
+
+function loadCart(){return JSON.parse(localStorage.getItem('cart')||'[]')}
+function saveCart(c){localStorage.setItem('cart',JSON.stringify(c))}
+function addToCart(id,qty){
+  const p = products[id]; if(!p) return alert('Product not found');
+  let cart = loadCart(); const existing = cart.find(it=>it.id===id);
+  if(existing) existing.qty += qty; else cart.push({id:id,name:p.name,price:p.price,qty:qty,img:p.img});
+  saveCart(cart); alert(`${p.name} added to cart`);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Camping Store</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+        <h1 class="checkout-logo">🏕️ Camping Store</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="products.html">Shop</a>
+            <a href="cart.html">Cart</a>
+            <a href="checkout.html">Checkout</a>
+            <a href="contact.html">Contact Us</a>
+            <a href="about.html">About Us</a>
+            <a href="login.html">Login</a>
+        </nav>
+    </header>
+
+<main class="container">
+  <div class="form-container" style="max-width:420px;margin:18px auto;">
+    <div id="alert" style="display:none;padding:10px;border-left:6px solid var(--green);background:#eaf5ea;margin-bottom:10px"></div>
+
+    <form id="login-form">
+      <h2>Login</h2>
+      <label>Email</label><input id="login-email" type="email" required>
+      <label>Password</label><input id="login-pass" type="password" required>
+      <div style="margin-top:12px"><button class="btn" type="submit">Login</button></div>
+      <p style="margin-top:12px;text-align:center">Don't have an account? <a href="#" onclick="showRegister(event)">Register</a></p>
+    </form>
+
+    <form id="register-form" style="display:none">
+      <h2>Register</h2>
+      <label>Full name</label><input id="reg-name" required>
+      <label>Email</label><input id="reg-email" type="email" required>
+      <label>Password</label><input id="reg-pass" type="password" required>
+      <div style="margin-top:12px"><button class="btn" type="submit">Create account</button></div>
+      <p style="margin-top:12px;text-align:center">Already a user? <a href="#" onclick="showLogin(event)">Login</a></p>
+    </form>
+  </div>
+</main>
+
+<footer>© 2025 Camping Store</footer>
+
+<script>
+/* trivial demo user storage in localStorage */
+function showRegister(e){e.preventDefault();document.getElementById('login-form').style.display='none';document.getElementById('register-form').style.display='block'}
+function showLogin(e){e.preventDefault();document.getElementById('login-form').style.display='block';document.getElementById('register-form').style.display='none'}
+function alertMsg(t){const a=document.getElementById('alert');a.innerText=t;a.style.display='block';setTimeout(()=>a.style.display='none',3000)}
+
+document.getElementById('register-form').addEventListener('submit',e=>{
+  e.preventDefault();
+  const name=document.getElementById('reg-name').value.trim(), email=document.getElementById('reg-email').value.trim().toLowerCase(), pass=document.getElementById('reg-pass').value;
+  if(!name||!email||!pass){alertMsg('Please fill all fields');return}
+  let users=JSON.parse(localStorage.getItem('users')||'[]');
+  if(users.find(u=>u.email===email)){alertMsg('Email already registered');return}
+  users.push({name,email,password:pass}); localStorage.setItem('users',JSON.stringify(users)); alertMsg('Registered! Please login'); showLogin(new Event('click'));
+});
+
+document.getElementById('login-form').addEventListener('submit',e=>{
+  e.preventDefault();
+  const email=document.getElementById('login-email').value.trim().toLowerCase(), pass=document.getElementById('login-pass').value;
+  let users=JSON.parse(localStorage.getItem('users')||'[]');
+  const user=users.find(u=>u.email===email && u.password===pass);
+  if(user){ alertMsg('Welcome, '+user.name); setTimeout(()=>location.href='home.html',600); } else alertMsg('Invalid credentials');
+});
+</script>
+</body></html>

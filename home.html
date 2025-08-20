@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Camping Store - Home</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header>
+        <h1 class="checkout-logo">🏕️ Camping Store</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="products.html">Shop</a>
+            <a href="cart.html">Cart</a>
+            <a href="checkout.html">Checkout</a>
+            <a href="contact.html" class="active">Contact Us</a>
+            <a href="about.html">About Us</a>
+            <a href="login.html">Login</a>
+        </nav>
+    </header>
+
+  <main class="container">
+    <section class="hero">
+      <h1>Adventure Awaits</h1>
+      <p>Top camping gear for outdoor lovers — tents, backpacks, stoves & more.</p>
+      <a class="btn" href="products.html">Shop Now</a>
+    </section>
+
+    <section class="categories">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h3 class="section-title">Special Categories</h3>
+      </div>
+
+      <div class="carousel-wrapper">
+        <button class="carousel-btn left" onclick="scrollLeft()">‹</button>
+        <div class="category-carousel" id="carousel">
+          <!-- JS inserts -->
+        </div>
+        <button class="carousel-btn right" onclick="scrollRight()">›</button>
+      </div>
+    </section>
+
+    <section style="margin-top:18px;">
+      <h3 class="section-title">Featured Products</h3>
+      <div class="product-grid" id="featured-grid"></div>
+    </section>
+  </main>
+
+  <footer>© 2025 Camping Store</footer>
+
+<script>
+/* Home-only product set (different dummy items) */
+const homeProducts = {
+  "alpine-tent":{name:"Alpine 2P Tent",price:119.99,img:"img/2.tent.jpg",desc:"Lightweight 2-person tent."},
+  "river-stove":{name:"River Gas Stove",price:39.99,img:"img/stove.jpg",desc:"Compact stove for camps."},
+  "mini-lantern":{name:"Mini Lantern",price:19.99,img:"img/lamps.jpg",desc:"Compact LED lamp."},
+  "trail-pack":{name:"Trail Running Pack",price:69.99,img:"img/hikbag.jpg",desc:"Small, breathable pack."}
+};
+
+/* render carousel categories */
+const carousel = document.getElementById('carousel');
+Object.values(homeProducts).forEach(p=>{
+  const c = document.createElement('div'); c.className='category-card';
+  c.innerHTML = `<img src="${p.img}" alt=""><h4>${p.name.split(' ')[0]}</h4>`;
+  carousel.appendChild(c);
+});
+
+/* featured products */
+const featuredGrid = document.getElementById('featured-grid');
+Object.entries(homeProducts).forEach(([id,p])=>{
+  const card = document.createElement('div'); card.className='product-card';
+  card.innerHTML = `<img src="${p.img}" alt="${p.name}"><h3>${p.name}</h3><p>$${p.price.toFixed(2)}</p>
+    <a class="btn small" href="product.html?id=${id}">View</a>
+    <button class="btn small" onclick="addToCart('${id}',1,'home')">Add</button>`;
+  featuredGrid.appendChild(card);
+});
+
+/* carousel scroll */
+const scrollAmount = 260;
+function scrollLeft(){ carousel.scrollBy({left:-scrollAmount,behavior:'smooth'}); }
+function scrollRight(){ carousel.scrollBy({left:scrollAmount,behavior:'smooth'}); }
+
+/* cart helpers - localStorage is shared across pages */
+function loadCart(){ return JSON.parse(localStorage.getItem('cart')||'[]'); }
+function saveCart(c){ localStorage.setItem('cart',JSON.stringify(c)); }
+
+/* addToCart looks up product across all pages — to keep simple, store minimal info */
+function addToCart(id,qty,source){
+  // try homeProducts first, others pages will have their own addToCart fallback
+  let p = homeProducts[id];
+  if(!p){
+    alert('Product detail is available on the shop page.');
+    return;
+  }
+  let cart = loadCart();
+  const ex = cart.find(it=>it.id===id);
+  if(ex) ex.qty += qty; else cart.push({id, name:p.name, price:p.price, qty, img:p.img});
+  saveCart(cart);
+  alert(`${p.name} added to cart`);
+}
+</script>
+</body>
+</html>
